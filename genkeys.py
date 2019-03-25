@@ -32,6 +32,17 @@ def gcd(a, b):
         return a
 
 
+def modular_inverse(input_e, input_phi_n):
+    temp_remainder = 0
+    test_d = 0
+    while temp_remainder != 1:
+        test_d += 1
+        print(test_d)
+        temp_remainder = (input_e * test_d) % input_phi_n
+
+    return test_d
+
+
 if __name__ == '__main__':
     p = generate_random_num()
     print(p)
@@ -41,14 +52,21 @@ if __name__ == '__main__':
     n = p * q
 
     # phi is the totient of n
-    phi = (p - 1) * (q - 1)
+    phi_n = (p - 1) * (q - 1)
 
     # choose e between 1, n and relatively prime to phi
     e = random.randrange(1, n)
 
-    g = gcd(e, phi)
+    # check if e and phi_n is relatively prime
+    g = gcd(e, phi_n)
 
     # if not relatively prime, re-generate e
     while g != 1:
         e = random.randrange(1, n)
-        g = gcd(e, phi)
+        print(e)
+        g = gcd(e, phi_n)
+
+    print(g)
+
+    d = modular_inverse(e, phi_n)
+    print(d)
