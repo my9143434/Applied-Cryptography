@@ -17,7 +17,7 @@ def is_prime(input_num):
 
 def generate_random_num():
     while True:
-        test_number = random.randint(1, 50)
+        test_number = random.randint(1, 1000)
         value = None
         value = is_prime(test_number)
         if value:
