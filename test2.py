@@ -1,13 +1,21 @@
-def modular_inverse(e, phi_n):
-    temp_remainder = 0
-    test_d = 0
-    while temp_remainder != 1:
-        test_d += 1
-        print(test_d)
-        temp_remainder = (e * test_d) % phi_n
-
-    return test_d
+import random, math
 
 
-d = modular_inverse(17, 60)
-print(d)
+n = 77
+phi_n = 60
+
+e = random.randrange(1, n)
+
+# check if e and phi_n is relatively prime
+g = math.gcd(e, phi_n)
+
+# if not relatively prime, re-generate e
+while g != 1:
+    e = random.randrange(1, n)
+    g = math.gcd(e, phi_n)
+
+
+
+
+print("encrypt key is: ", e)
+
