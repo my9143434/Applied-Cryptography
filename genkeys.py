@@ -1,5 +1,7 @@
 import random, math
 
+from pip._vendor.distlib.compat import raw_input
+
 p_value = 0
 
 
@@ -38,19 +40,20 @@ def modular_inverse(input_e, input_phi_n):
 
 
 if __name__ == '__main__':
+    your_name = raw_input("Please enter your name: ")
+
     p = generate_random_num()
-    print("p is :", p)
+    # print("p is :", p)
     q = generate_random_num()
-    print("q is :", q)
+    # print("q is :", q)
 
     n = p * q
 
     # phi is the totient of n
     phi_n = (p - 1) * (q - 1)
-    print("phi_n is :", phi_n)
+    # print("phi_n is :", phi_n)
 
     # choose e between 1, n and relatively prime to phi
-    print("finding e")
     e = random.randrange(1, n)
 
     # check if e and phi_n is relatively prime
@@ -62,8 +65,28 @@ if __name__ == '__main__':
         # print(e)
         g = math.gcd(e, phi_n)
 
-    print("encrypt key is: ", e)
+    print("Generating Key Pair:")
 
-    print("finding d:")
+    public_key = (e, phi_n)
+    print("public key is: ", public_key)
+
     d = modular_inverse(e, phi_n)
-    print("decryption number  is: ", d)
+    private_key = (d, phi_n)
+    print("private key is: ", private_key)
+
+    filename = "%s.pub" % your_name
+    FILE = open(filename, "w")
+    public_key = str(public_key)
+    FILE.writelines(public_key)
+    FILE.close()
+
+    filename = "%s.prv" % your_name
+    FILE = open(filename, "w")
+    private_key = str(private_key)
+    FILE.writelines(private_key)
+    FILE.close()
+
+
+
+
+
