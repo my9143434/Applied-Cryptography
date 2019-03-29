@@ -1,5 +1,4 @@
 import random, math
-
 from pip._vendor.distlib.compat import raw_input
 
 p_value = 0
