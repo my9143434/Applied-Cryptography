@@ -3,31 +3,6 @@ import os, random, sys, math
 #from Crypto.Cipher import AES
 
 
-print("hh")
-
-
-# encrypting
-if '-e' in sys.argv:
-    print("ff")
-    '''
-    flag_index = sys.argv.index('-e')
-    flag_index += 1
-    key = int(sys.argv[flag_index])
-    flag_index += 1
-    filename = int(sys.argv[flag_index])
-    flag_index += 1
-    output_filename= int(sys.argv[flag_index])
-
-    encrypt(key, filename, output_filename)
-    '''
-
-
-
-# decrypting
-if '-d' in sys.argv:
-    print("dd")
-
-
 def encrypt(key, filename, input_filename):
     chunksize = 64*1024
     output_filename = "(encrypted)"+filename
@@ -52,6 +27,33 @@ def encrypt(key, filename, input_filename):
                         chunk += '' *(16 - (len(chunk) % 16))
 
                     output_filename.write(encryptor.encrypt(chunk))
+
+# encrypting
+if '-e' in sys.argv:
+    print("ff")
+
+    flag_index = sys.argv.index('-e')
+    
+    flag_index += 1
+    public_key = int(sys.argv[flag_index])
+    
+    flag_index += 1
+    plaintext_filename = int(sys.argv[flag_index])
+    
+    flag_index += 1
+    output_filename= int(sys.argv[flag_index])
+
+    encrypt(public_key, plaintext_filename, output_filename)
+
+
+
+
+# decrypting
+if '-d' in sys.argv:
+    print("dd")
+
+
+
 
 def decrypt(key, filename):
     chunksize = 64*1024
