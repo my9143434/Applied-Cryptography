@@ -1,26 +1,26 @@
+import base64
 
-name = 'allen'
-print('%s' % (name))
+from Crypto.Cipher import AES
 
-filename = "%s.pub" %name
 
-# Create a file object:
-# in "write" mode
-FILE = open(filename, "w")
+# str不是16的倍数那就补足为16的倍数
+def add_to_16(text):
+    while len(text) % 16 != 0:
+        text += '\0'
+    return str.encode(text)  # 返回bytes
 
-e = 99
-phi_n = 1000
 
-public_key = str(e, phi_n)
-public_key = str(public_key)
-# Write all the lines at once:
-FILE.writelines(public_key)
+key = '123456'  # 密码
 
-# Close
-FILE.close()
+text = 'abc123def456'  # 待加密文本
 
-'''
-f = open(FILE, 'r')
-print(f.read())
-f.close()
-'''
+aes = AES.new(add_to_16(key), AES.MODE_ECB)  # 初始化加密器
+
+encrypted_text = str(base64.encodebytes(aes.encrypt(add_to_16(text))), encoding='utf8').replace('\n', '')  # 加密
+
+text_decrypted = str(
+    aes.decrypt(base64.decodebytes(bytes(encrypted_text, encoding='utf8'))).rstrip(b'\0').decode("utf8"))  # 解密
+
+print('加密值：', encrypted_text)
+
+print('解密值：', text_decrypted)

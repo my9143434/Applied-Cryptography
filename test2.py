@@ -1,21 +1,20 @@
-import random, math
+import sys
+
+if '-e' in sys.argv:
+    print("ff")
+
+    flag_index = sys.argv.index('-e')
+
+    flag_index += 1
+    public_key = (sys.argv[flag_index])
+
+    flag_index += 1
+    plaintext_filename = (sys.argv[flag_index])
+
+    flag_index += 1
+    output_filename = (sys.argv[flag_index])
+
+    print(public_key, plaintext_filename, output_filename)
 
 
-n = 77
-phi_n = 60
-
-e = random.randrange(1, n)
-
-# check if e and phi_n is relatively prime
-g = math.gcd(e, phi_n)
-
-# if not relatively prime, re-generate e
-while g != 1:
-    e = random.randrange(1, n)
-    g = math.gcd(e, phi_n)
-
-
-
-
-print("encrypt key is: ", e)
 
