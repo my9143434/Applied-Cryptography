@@ -66,11 +66,11 @@ if __name__ == '__main__':
 
     print("Generating Key Pair:")
 
-    public_key = (e, phi_n)
+    public_key = (e, n)
     print("public key is: ", public_key)
 
     d = modular_inverse(e, phi_n)
-    private_key = (d, phi_n)
+    private_key = (d, n)
     print("private key is: ", private_key)
 
     filename = "%s.pub" % your_name

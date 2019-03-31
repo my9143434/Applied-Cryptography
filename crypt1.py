@@ -2,7 +2,6 @@ from Crypto.Cipher import AES
 # import binascii
 import os
 import sys
-import base64
 
 
 def pad(text):
@@ -10,17 +9,21 @@ def pad(text):
         text += '\0'
     return str.encode(text)
 
-'''
-def rsa_encrypt(rsa_key, plaintext):
+
+def rsa_encrypt(rsa_key, aes_key):
+    print("here is rsa_encrypt")
+    print("rsa key: ", rsa_key)
+    # print(aes_key)
+    '''
     key, n = rsa_key
     # Convert each letter in the plaintext to numbers based on the character using a^b mod m
-    cipher = [(ord(char) ** key) % n for char in plaintext]
+    cipher = [(ord(char) ** key) % n for char in aes_key]
     # Return the array of bytes
     return cipher
-'''
+    '''
 
 
-def aes_encrypt(rsa_public_key, in_filename, output_filename):
+def aes_encrypt(rsa_key, in_filename, output_filename):
     key = os.urandom(16)
     aes = AES.new(key, AES.MODE_CBC)
 
@@ -31,10 +34,9 @@ def aes_encrypt(rsa_public_key, in_filename, output_filename):
 
     encrypted_text = aes.encrypt(pad(lines))
     # aes.encrypt(pad(lines))
-    print(encrypted_text)
+    # print(encrypted_text)
 
-    '''
-    encrypted_key = rsa_encrypt(rsa_public_key, key)
+    encrypted_key = rsa_encrypt(rsa_key, key)
     entire_message = (key, encrypted_key)
 
     filename = "%s" % output_filename
@@ -42,22 +44,24 @@ def aes_encrypt(rsa_public_key, in_filename, output_filename):
     entire_message = str(entire_message)
     FILE.writelines(entire_message)
     FILE.close()
-    
 
-    print("1")
-    print(encrypted_text)
-    print(entire_message)
-    '''
+    # print(encrypted_text)
+    # print(entire_message)
 
 
 if '-e' in sys.argv:
     flag_index = sys.argv.index('-e')
 
     flag_index += 1
-    public_key = (sys.argv[flag_index])
+    rsa_key_filename = (sys.argv[flag_index])
+    # get message
+    rsa_key_file = open(rsa_key_filename, "r")
+    # it's a string
+    rsa_key_lines = rsa_key_file.read()
+
     flag_index += 1
     plaintext_filename = (sys.argv[flag_index])
     flag_index += 1
     output_filename = (sys.argv[flag_index])
 
-    aes_encrypt(public_key, plaintext_filename, output_filename)
+    aes_encrypt(rsa_key_lines, plaintext_filename, output_filename)
