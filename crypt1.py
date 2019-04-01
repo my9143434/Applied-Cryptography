@@ -1,3 +1,5 @@
+import string
+
 from Crypto.Cipher import AES
 # import binascii
 import os
@@ -12,18 +14,28 @@ def pad(text):
 
 def rsa_encrypt(rsa_key, aes_key):
     print("here is rsa_encrypt")
-    print("rsa key: ", rsa_key)
+    print(rsa_key)
+    # print("rsa key: ", type(rsa_key))
+
+    rsa_key = rsa_key.strip(string.punctuation)
+    # print(rsa_key)
+    rsa_key = rsa_key.split(",")
+    # print(type(rsa_key))
+    # print(rsa_key[0])
+    e = int(rsa_key[0])
+    n = int(rsa_key[1])
+    # print(e*n)
+
+    aes_key = str(aes_key)
     # print(aes_key)
-    '''
-    key, n = rsa_key
+
     # Convert each letter in the plaintext to numbers based on the character using a^b mod m
-    cipher = [(ord(char) ** key) % n for char in aes_key]
+    cipher = [(ord(char) ** e) % n for char in aes_key]
     # Return the array of bytes
     return cipher
-    '''
 
 
-def aes_encrypt(rsa_key, in_filename, output_filename):
+def aes_encrypt(rsa_key, in_filename, output_file_name):
     key = os.urandom(16)
     aes = AES.new(key, AES.MODE_CBC)
 
@@ -37,9 +49,9 @@ def aes_encrypt(rsa_key, in_filename, output_filename):
     # print(encrypted_text)
 
     encrypted_key = rsa_encrypt(rsa_key, key)
-    entire_message = (key, encrypted_key)
+    entire_message = (encrypted_key, encrypted_text)
 
-    filename = "%s" % output_filename
+    filename = "%s" % output_file_name
     FILE = open(filename, "w")
     entire_message = str(entire_message)
     FILE.writelines(entire_message)
