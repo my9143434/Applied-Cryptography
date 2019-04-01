@@ -41,7 +41,7 @@ if '-e' in sys.argv:
     plaintext_filename = int(sys.argv[flag_index])
     
     flag_index += 1
-    output_filename= int(sys.argv[flag_index])
+    output_filename = int(sys.argv[flag_index])
 
     encrypt(public_key, plaintext_filename, output_filename)
 
@@ -51,8 +51,6 @@ if '-e' in sys.argv:
 # decrypting
 if '-d' in sys.argv:
     print("dd")
-
-
 
 
 def decrypt(key, filename):
