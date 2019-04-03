@@ -18,7 +18,7 @@ def is_prime(input_num):
 
 def generate_random_num():
     while True:
-        test_number = random.randint(1, 1000)
+        test_number = random.randint(1, 99)
         value = None
         value = is_prime(test_number)
         if value:
@@ -84,8 +84,3 @@ if __name__ == '__main__':
     private_key = str(private_key)
     FILE.writelines(private_key)
     FILE.close()
-
-
-
-
-
