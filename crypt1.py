@@ -19,6 +19,8 @@ def rsa_encrypt(rsa_key, aes_key):
     n = int(rsa_key[1])
 
     aes_key = str(aes_key)
+    print(aes_key)
+
 
     # Convert each letter in the plaintext to numbers based on the character using a^b mod m
     cipher = [(ord(char) ** e) % n for char in aes_key]
@@ -29,6 +31,9 @@ def rsa_encrypt(rsa_key, aes_key):
 def aes_encrypt(rsa_key, in_filename, output_file_name):
     aes_key = os.urandom(16)
     aes = AES.new(aes_key, AES.MODE_CBC)
+    print(len(aes_key))
+    print(type(aes_key))
+
 
     # get message
     text1_file = open(in_filename, "r")
@@ -78,12 +83,12 @@ def rsa_decrypt(rsa_key, encrypted_key):
     d = int(rsa_key[0])
     n = int(rsa_key[1])
 
-    print(encrypted_key)
+    # print(encrypted_key)
     encrypted_key = encrypted_key.strip(string.punctuation)
     encrypted_key = encrypted_key.replace(" ", "")
     encrypted_key = encrypted_key.split(',')
     print(type(encrypted_key))
-    print(encrypted_key)
+    # print(encrypted_key)
 
     encrypted_key = list(map(int, encrypted_key))
 
@@ -103,25 +108,26 @@ def aes_decrypt(rsa_key, cipher_file, output_filename):
     cipher = cipher_lines.split(", 'pac2', ")
 
     encrypted_key = cipher[0]
-    print(type(encrypted_key))
+    # print(type(encrypted_key))
 
     encrypted_key = encrypted_key.split('(')
     encrypted_key = encrypted_key[1]
-    print(encrypted_key)
+    # print(encrypted_key)
 
     aes_key = rsa_decrypt(rsa_key, encrypted_key)
+    aes_key = str.encode(aes_key)
 
     print(type(aes_key))
-    print(aes_key)
+    print(len(aes_key))
+    # print(aes_key)
 
     ct_content = cipher[1]
-    print(type(ct_content))
-    '''
-    print(type(rsa_key))
+    # print(type(ct_content))
+
     aes = AES.new(aes_key, AES.MODE_CBC)
     decrypted_text = aes.dencrypt(ct_content)
     print("decrypted text:", decrypted_text)
-    '''
+
 
 if '-d' in sys.argv:
     flag_index = sys.argv.index('-d')
