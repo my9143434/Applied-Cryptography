@@ -1,16 +1,22 @@
 import os
 
-from numpy.core import byte
 
 aes_key = os.urandom(16)
 print(type(aes_key))
 print(aes_key)
 
-aes_key = byte(aes_key , encode=“USF-8”)
+filename = "temp"
 
-aes_key.decode("utf-8")
-print(type(aes_key))
-print(aes_key)
+FILE = open(filename, "wb")
+FILE.writelines(aes_key)
+FILE.close()
+
+read_aes_key = open(filename, "rb")
+rsa_key = read_aes_key.read()
+
+print(type(rsa_key))
+
+
 '''
 
 str1 = b'\xe7z\x99\xc3d\xe9\x8f\xa8T\x04\x8f7\x1e\x1bW\xe6'
