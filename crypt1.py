@@ -90,7 +90,6 @@ def rsa_decrypt(rsa_key, encrypted_key):
     plain = [chr((char ** d) % n) for char in encrypted_key]
 
     aes_key = ''.join(plain)
-    print(aes_key)
 
     # Return the array of bytes as a string
     return aes_key
@@ -109,22 +108,20 @@ def aes_decrypt(rsa_key, cipher_file, output_filename):
     encrypted_key = encrypted_key.split('(')
     encrypted_key = encrypted_key[1]
     print(encrypted_key)
-    # ct_content = cipher[1]
-    # print(ct_content)
-    # print(type(rsa_key))
 
     aes_key = rsa_decrypt(rsa_key, encrypted_key)
 
-    '''
-
-
+    print(type(aes_key))
     print(aes_key)
-    
+
+    ct_content = cipher[1]
+    print(type(ct_content))
+    '''
+    print(type(rsa_key))
     aes = AES.new(aes_key, AES.MODE_CBC)
     decrypted_text = aes.dencrypt(ct_content)
     print("decrypted text:", decrypted_text)
     '''
-
 
 if '-d' in sys.argv:
     flag_index = sys.argv.index('-d')
