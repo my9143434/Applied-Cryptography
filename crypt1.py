@@ -1,5 +1,6 @@
+import base64
 import string
-
+from base64 import b64encode
 from Crypto.Cipher import AES
 import os
 import sys
@@ -19,23 +20,23 @@ def rsa_encrypt(rsa_key, aes_key):
     n = int(rsa_key[1])
 
     aes_key = str(aes_key)
-    print(aes_key)
+    print(type(aes_key))
+    print("encrypted key: ", aes_key)
 
     # Convert each letter in the plaintext to numbers based on the character using a^b mod m
     cipher = [(ord(char) ** e) % n for char in aes_key]
     # Return the array of bytes
-    print("cipher type:", type(cipher))
+    # print("encrypted_aes_key type:", type(cipher))
     return cipher
 
 
 def aes_encrypt(rsa_key, in_filename, output_file_name):
     aes_key = os.urandom(16)
     aes = AES.new(aes_key, AES.MODE_CBC)
+
+    print("aes key: ", aes_key)
     print("aes key length:", len(aes_key))
     print("aes key type: ", type(aes_key))
-
-    string_aeskey = aes_key.decode("utf-8")
-    print("string_aeskey: ", string_aeskey)
 
     # get message
     text1_file = open(in_filename, "r")
@@ -43,11 +44,23 @@ def aes_encrypt(rsa_key, in_filename, output_file_name):
     lines = text1_file.read()
 
     encrypted_text = aes.encrypt(pad(lines))
-    # aes.encrypt(pad(lines))
+    print("encrypted text_type: ", type(encrypted_text))
+    print("encrypted text", encrypted_text)
+    print("encrypted text length: ", len(encrypted_text))
 
-    encrypted_key = rsa_encrypt(rsa_key, aes_key)
-    print("encrypted key type:", type(encrypted_key))
-    entire_message = encrypted_key, 'pac2', encrypted_text
+    decode_encrypted_text = b64encode(encrypted_text).decode('utf-8')
+    print("this is decode encrypt text: ", decode_encrypted_text)
+    print(len(decode_encrypted_text))
+
+    # before using rsa to encrypt, decode the bytes first
+    decode_aes_key = b64encode(aes_key).decode('utf-8')
+    # print("decode aes key: ", decode_aes_key)
+    # print("decoded aes key type: ", type(decode_aes_key))
+
+    # encrypting the aes key
+    encrypted_key = rsa_encrypt(rsa_key, decode_aes_key)
+
+    entire_message = encrypted_key, 'pac2', decode_encrypted_text
 
     filename = "%s" % output_file_name
     FILE = open(filename, "w")
@@ -86,12 +99,10 @@ def rsa_decrypt(rsa_key, encrypted_key):
     d = int(rsa_key[0])
     n = int(rsa_key[1])
 
-    # print(encrypted_key)
+    print(type(encrypted_key))
     encrypted_key = encrypted_key.strip(string.punctuation)
     encrypted_key = encrypted_key.replace(" ", "")
     encrypted_key = encrypted_key.split(',')
-    # print(type(encrypted_key))
-    # print(encrypted_key)
 
     encrypted_key = list(map(int, encrypted_key))
 
@@ -99,13 +110,15 @@ def rsa_decrypt(rsa_key, encrypted_key):
 
     aes_key = ''.join(plain)
 
-    msg = bytes()  # New empty byte array
-    # Append data to the array
-    msg.extend(aes_key)
-    print("msg type:", type(msg))
+    encode_aes_key = base64.b64decode(aes_key.encode('utf-8'))
+
+    print("rsa decrypt result(aes key): ", encode_aes_key)
+    # print(len(encode_aes_key))
+    # print(type(encode_aes_key))
 
     # Return the array of bytes as a string
-    return aes_key
+
+    return encode_aes_key
 
 
 def aes_decrypt(rsa_key, cipher_file, output_filename):
@@ -116,38 +129,35 @@ def aes_decrypt(rsa_key, cipher_file, output_filename):
     cipher = cipher_lines.split(", 'pac2', ")
 
     encrypted_key = cipher[0]
-    # print(type(encrypted_key))
 
     encrypted_key = encrypted_key.split('(')
     encrypted_key = encrypted_key[1]
-    # print(encrypted_key)
+
+    print("encrypted key: ", encrypted_key)
+    print("encrypted key type: ", type(encrypted_key))
 
     aes_key = rsa_decrypt(rsa_key, encrypted_key)
 
-
-''' # aes_key = str.encode(aes_key)
-    aes_key = aes_key[2:-1]
-    # aes_key = bytes(aes_key, encoding='utf-8')
-
-    print(aes_key)
-    aes_key = aes_key.replace("\\", '')
-
-    aes_key = aes_key.encode(encoding="utf-8")
-
-    print(aes_key)
-    print(type(aes_key))
-    print(len(aes_key))
-    # print(aes_key)
-    
-
-
     ct_content = cipher[1]
-    # print(type(ct_content))
+    print("this is ct_content: ", ct_content)
+    ct_content = ct_content[1:-2]
+    print("this is ct_content: ", ct_content)
+    encode_ct_content = base64.b64decode(ct_content.encode('utf-8'))
+    print(encode_ct_content)
+    print(len(encode_ct_content))
+    print(type(encode_ct_content))
 
     aes = AES.new(aes_key, AES.MODE_CBC)
-    decrypted_text = aes.dencrypt(ct_content)
+    decrypted_text = aes.decrypt(encode_ct_content).decode('latin-1')
+    decrypted_text = decrypted_text[16:]
     print("decrypted text:", decrypted_text)
-    '''
+    print(type(decrypted_text))
+
+    filename = "%s" % output_filename
+    FILE = open(filename, "w")
+    FILE.writelines(decrypted_text)
+    FILE.close()
+
 
 if '-d' in sys.argv:
     flag_index = sys.argv.index('-d')
@@ -166,3 +176,5 @@ if '-d' in sys.argv:
     output_filename = (sys.argv[flag_index])
 
     aes_decrypt(rsa_key_lines, cipher_filename, output_filename)
+
+
